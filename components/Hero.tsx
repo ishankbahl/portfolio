@@ -20,10 +20,11 @@ export function Hero({
   const sdk = experience.find((role) => role.link)?.link
 
   return (
-    <section
-      aria-labelledby="hero-heading"
-      className="grid gap-10 sm:grid-cols-[1.35fr_1fr] sm:gap-12"
-    >
+    <>
+      <section
+        aria-labelledby="hero-heading"
+        className="grid gap-10 sm:grid-cols-[1.35fr_1fr] sm:gap-12"
+      >
       <div>
         <p className="text-meta font-medium tracking-[0.14em] text-accent uppercase">
           {person.headline}
@@ -46,7 +47,7 @@ export function Hero({
         </div>
       </div>
 
-      <div className="space-y-5">
+      <div>
         {/*
           Plain img, not next/image: see the Images section of SPEC.md. width and
           height are the real intrinsic dimensions, which is what reserves the
@@ -69,33 +70,40 @@ export function Hero({
           className="w-full rounded-xl border border-border object-cover"
         />
 
-        <dl className="space-y-4 rounded-xl border border-border bg-card p-5 text-meta">
+        </div>
+      </section>
+
+      {/*
+        A horizontal strip rather than a card in the right column. Stacked under
+        the photo it pushed the right column far below the left and left a void
+        beside it.
+      */}
+      <dl className="mt-12 grid gap-x-8 gap-y-5 border-t border-border pt-6 text-meta sm:grid-cols-4">
+        <div>
+          <dt className="text-muted">Currently</dt>
+          <dd className="mt-1 text-body font-medium">{current?.company}</dd>
+          <dd className="text-muted">{current?.title}</dd>
+        </div>
+        <div>
+          <dt className="text-muted">Based in</dt>
+          <dd className="mt-1 text-body">{person.location}</dd>
+        </div>
+        <div>
+          <dt className="text-muted">Studied</dt>
+          <dd className="mt-1 text-body">{education.degree}</dd>
+          <dd className="text-muted">{education.year}</dd>
+        </div>
+        {sdk ? (
           <div>
-            <dt className="text-muted">Currently</dt>
-            <dd className="mt-0.5 text-body font-medium">{current?.company}</dd>
-            <dd className="text-muted">{current?.title}</dd>
+            <dt className="text-muted">Open source</dt>
+            <dd className="mt-1">
+              <TextLink href={sdk.url} external>
+                {sdk.label}
+              </TextLink>
+            </dd>
           </div>
-          <div>
-            <dt className="text-muted">Based in</dt>
-            <dd className="mt-0.5 text-body">{person.location}</dd>
-          </div>
-          <div>
-            <dt className="text-muted">Studied</dt>
-            <dd className="mt-0.5 text-body">{education.degree}</dd>
-            <dd className="text-muted">{education.year}</dd>
-          </div>
-          {sdk ? (
-            <div>
-              <dt className="text-muted">Open source</dt>
-              <dd className="mt-0.5">
-                <TextLink href={sdk.url} external>
-                  {sdk.label}
-                </TextLink>
-              </dd>
-            </div>
-          ) : null}
-        </dl>
-      </div>
-    </section>
+        ) : null}
+      </dl>
+    </>
   )
 }

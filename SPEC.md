@@ -35,8 +35,8 @@ use, and its cost is measured rather than hand waved. See `docs/adr/0003-framewo
 
 One route, `/`. A sticky header carries the name, in-page nav and the resume action. Then:
 
-1. Hero. Two columns. Headline, name, positioning and three actions on the left; the photo and a
-   facts card on the right, carrying current role, location, education and the open source link.
+1. Hero. Two columns, copy left and photo right, then a facts strip across the full width carrying
+   current role, location, education and the open source link.
 2. What I work on. Prose, not bullets.
 3. Skills. Grouped, as plain words, in a grid.
 4. Selected work. Three cards, one per company: the problem in a line, what I built in a paragraph,
