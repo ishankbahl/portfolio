@@ -1,6 +1,8 @@
 import type { Metadata } from 'next'
 import type { ReactNode } from 'react'
 import localFont from 'next/font/local'
+import { Analytics } from '@vercel/analytics/next'
+import { SpeedInsights } from '@vercel/speed-insights/next'
 import { resume } from '@/lib/resume'
 import './globals.css'
 
@@ -57,6 +59,15 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           Skip to content
         </a>
         {children}
+        {/*
+          The only two client components on the page, and the only exceptions
+          CLAUDE.md allows. Both fetch their script from /_vercel/, which the
+          platform serves and this build does not contain, so they do nothing
+          locally and 404 there. That is why tests/console.spec.ts skips
+          /_vercel/ when it looks for failed requests.
+        */}
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   )

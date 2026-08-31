@@ -11,9 +11,13 @@
     "build": "next build",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
+    "budget": "node scripts/check-js-budget.mjs",
+    "og": "node scripts/generate-og.mjs",
     "test:e2e": "playwright test"
   },
   "dependencies": {
+    "@vercel/analytics": "^2.0.1",
+    "@vercel/speed-insights": "^2.0.0",
     "next": "15.5.24",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
