@@ -48,4 +48,17 @@ test('no console errors and no failed requests on load', async ({ page }) => {
 
   expect(consoleErrors, 'console errors on load').toEqual([])
   expect(failedRequests, 'failed or 4xx/5xx requests on load').toEqual([])
+
+  /*
+    Checked explicitly because the listeners above cannot see it. Headless
+    Chromium does not make the automatic /favicon.ico request a real browser
+    makes, so this test reported a clean load while every real visitor took a
+    404. Lighthouse found it in production, not this test, which is the blind
+    spot this assertion closes.
+  */
+  const iconHref = await page.locator('link[rel="icon"]').first().getAttribute('href')
+  expect(iconHref, 'the page must declare an icon, or browsers fall back to /favicon.ico').toBeTruthy()
+
+  const icon = await page.request.get(iconHref ?? '')
+  expect(icon.status(), `declared icon ${iconHref} must resolve`).toBe(200)
 })
