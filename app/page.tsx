@@ -1,3 +1,4 @@
+import { personJsonLd } from '@/lib/person-json-ld'
 import { resume } from '@/lib/resume'
 import { Section } from './components/Section'
 import { TextLink } from './components/TextLink'
@@ -7,6 +8,7 @@ export default function Home() {
 
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: personJsonLd() }} />
       <main id="main" className="mx-auto w-full max-w-[38rem] px-6 py-20 sm:py-28">
         <section>
           <h1 className="text-name font-semibold tracking-tight">{person.name}</h1>

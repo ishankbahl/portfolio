@@ -189,7 +189,12 @@ Five Playwright tests. Written before the code they cover.
 
 Test 3 runs twice because one run only ever sees the palette the browser happens to be in, which is
 light. Dark mode is a second set of colours and an axe run that never loads them is not evidence
-about them. It stays one test.
+about them. It is one test of five in this list and two cases in the runner, which reports six, and
+it is two cases rather than one loop so a failure says which scheme broke.
+
+That second run is not theoretical. I dropped the dark accent to a failing colour and rebuilt: light
+stayed green and dark failed with `color-contrast` at serious on eight nodes. A light-only run would
+have shipped it.
 
 Test 4 needs the `/_vercel/` exception or it fails on a 404 that is correct behaviour everywhere
 except production, since the analytics scripts come from the platform and not from this build. The
