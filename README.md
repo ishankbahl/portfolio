@@ -1,7 +1,6 @@
 # Ishank Bahl, portfolio landing page
 
-One static route, prerendered, deployed on Vercel. This was titled `ishankbahl.com` before the site
-had a URL. It does not have that one yet, so the title says what is true instead.
+One static route, prerendered, deployed on Vercel.
 
 Live: https://portfolio-six-azure-25.vercel.app
 Resume: https://portfolio-six-azure-25.vercel.app/ishank-bahl-resume.pdf
