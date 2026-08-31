@@ -91,9 +91,13 @@ So the target is not a total. It is the part I control.
 | Lighthouse performance and accessibility, mobile | report the real numbers | by hand, once |
 
 Only the first row is a CI gate, because it is the only one CI can honestly assert on a static
-export. Most of that 6 kB is the two analytics components rather than my own code, and the README
-splits it out. The rest are measured once against the deployed URL and the actual figures go in the README.
+export. The rest are measured once against the deployed URL and the actual figures go in the README.
 If one of them misses, the real number goes in with a sentence saying why.
+
+Measured, not predicted: application JavaScript is **2.34 kB gzipped of the 6 kB budget, and all of
+it is the two analytics components. My own code is 0.00 kB.** Every component on this page except
+those two is a server component, so none of them reach the browser. I expected to be writing "most
+of it is analytics" here and the honest number turned out to be all of it.
 
 The gate is a script rather than a number I read off the build output. It takes the chunk list for `/`
 from `.next/app-build-manifest.json`, drops the chunks in the shared framework set, gzips what is
