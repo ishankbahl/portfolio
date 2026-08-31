@@ -11,7 +11,8 @@
     "siteUrl": "https://ishankbahl.vercel.app"
   },
   "intro": [
-    "I work on the parts of a system other teams depend on. That has meant a hierarchical configuration model and a React micro-frontend that had to live inside an Angular host, the home and discovery surfaces of a streaming product, and the feature flag SDK that server side experiments call. I write the services and data models behind those interfaces too, in Node, Python and SQL, and I have owned the infrastructure they run on. The work is the contract underneath the screen rather than the screen: what a team can change safely, what breaks when they do, and who finds out."
+    "I work on the parts of a system other teams depend on. That has meant a hierarchical configuration model and a React micro-frontend that had to live inside an Angular host, the home and discovery surfaces of a streaming product, and the feature flag SDK that server side experiments call.",
+    "I write the services and data models behind those interfaces too, in Node, Python and SQL, and I have owned the infrastructure they run on. The work is the contract underneath the screen rather than the screen: what a team can change safely, what breaks when they do, and who finds out."
   ],
   "experience": [
     {

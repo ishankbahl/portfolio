@@ -31,11 +31,13 @@ export default function Home() {
         </section>
 
         <Section title="What I work on">
-          {intro.map((paragraph) => (
-            <p key={paragraph.slice(0, 40)} className="text-body">
-              {paragraph}
-            </p>
-          ))}
+          <div className="space-y-4">
+            {intro.map((paragraph) => (
+              <p key={paragraph.slice(0, 40)} className="text-body">
+                {paragraph}
+              </p>
+            ))}
+          </div>
         </Section>
 
         <Section title="Experience">
