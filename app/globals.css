@@ -1,1 +1,66 @@
 @import 'tailwindcss';
+
+/*
+  One accent hue at two lightness values, one per colour scheme. Every text
+  colour below was checked against its own background with a contrast script,
+  not by eye. Worst case is the light accent at 6.54:1, and the dark accent is
+  8.31:1, against a 4.5:1 requirement.
+*/
+:root {
+  --bg: #fdfdfc;
+  --fg: #15171c;
+  --muted: #565b6b;
+  --accent: #1b4fd8;
+  --border: #e4e4df;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0e1014;
+    --fg: #e8e9ec;
+    --muted: #9aa0af;
+    --accent: #88a9ff;
+    --border: #242730;
+  }
+}
+
+/*
+  inline so the utilities compile to var(--bg) rather than a copy of it, which
+  is what lets the media query above switch them with no toggle and no script.
+*/
+@theme inline {
+  --color-bg: var(--bg);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-border: var(--border);
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  --text-name: clamp(2rem, 7vw, 2.625rem);
+  --text-name--line-height: 1.08;
+  --text-lead: 1.125rem;
+  --text-lead--line-height: 1.55;
+  --text-body: 1rem;
+  --text-body--line-height: 1.6;
+  --text-meta: 0.8125rem;
+  --text-meta--line-height: 1.5;
+}
+
+html {
+  /* so form controls and scrollbars follow the scheme too */
+  color-scheme: light dark;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--fg);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Visible and never removed. */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
