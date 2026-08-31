@@ -1,0 +1,17 @@
+# pnpm 11 reads these here rather than from a "pnpm" field in package.json.
+
+# next pins postcss 8.4.31, which carries two high advisories. 8.5.26 is patched
+# and is what tailwind already resolves to, so this collapses two copies into one.
+overrides:
+  postcss: ^8.5.26
+
+# sharp is an optional dependency of next used only to optimise next/image.
+# CLAUDE.md bans next/image and output: 'export' has no server to serve it from,
+# so this is a native binary we never call carrying a high libvips advisory.
+ignoredOptionalDependencies:
+  - sharp
+
+allowBuilds:
+  sharp: false
+  # native resolver behind the eslint import rules, dev only
+  unrs-resolver: true
