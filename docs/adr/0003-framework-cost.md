@@ -8,8 +8,9 @@ Status: accepted
 This is one static page with no interactivity. A hand written HTML file would be smaller and faster
 than anything a framework produces, so Next.js has to justify itself.
 
-I measured the floor before setting any target. Next.js 15.5.24, App Router, static export, no client
-components:
+I measured the floor before setting any target, on a probe page rather than this one: Next.js 15.5.24,
+App Router, static export, no client components. The route figure below is that probe's, not this
+page's, which is 134 B once the JSON-LD block and the analytics components are in.
 
 ```
 Route (app)                     Size  First Load JS

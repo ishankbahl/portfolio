@@ -103,7 +103,7 @@ Measured against the deployed URL.
 |---|---|
 | Framework baseline, First Load JS | 102 kB gzipped |
 | Application JavaScript | 2.34 kB, all of it the two analytics libraries |
-| Route JS emitted for `/` | 127 B |
+| Route JS emitted for `/` | 134 B |
 | Transfer, first visit, cold cache, brotli | ~221 kB over 11 requests |
 | Lighthouse mobile | performance 98 to 100, accessibility 100, best practices 100, SEO 100 |
 | Cumulative Layout Shift | 0 |
