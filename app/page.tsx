@@ -1,8 +1,9 @@
 import { resume } from '@/lib/resume'
+import { Section } from './components/Section'
 import { TextLink } from './components/TextLink'
 
 export default function Home() {
-  const { person } = resume
+  const { person, intro, experience, skills, education } = resume
 
   return (
     <>
@@ -28,8 +29,81 @@ export default function Home() {
             </li>
           </ul>
         </section>
+
+        <Section title="What I work on">
+          {intro.map((paragraph) => (
+            <p key={paragraph.slice(0, 40)} className="text-body">
+              {paragraph}
+            </p>
+          ))}
+        </Section>
+
+        <Section title="Experience">
+          <ol className="space-y-8">
+            {experience.map((role) => (
+              <li key={role.company}>
+                <div className="flex flex-wrap items-baseline justify-between gap-x-4">
+                  <h3 className="font-medium">{role.company}</h3>
+                  <p className="text-meta text-muted">{role.period}</p>
+                </div>
+                <p className="text-meta text-muted">{role.title}</p>
+                <ul className="mt-3 space-y-1.5">
+                  {role.lines.map((line) => (
+                    <li key={line.slice(0, 40)} className="text-body">
+                      {line}
+                    </li>
+                  ))}
+                </ul>
+                {role.link ? (
+                  <p className="mt-2 text-meta">
+                    <TextLink href={role.link.url} external>
+                      {role.link.label}
+                    </TextLink>
+                  </p>
+                ) : null}
+              </li>
+            ))}
+          </ol>
+          <p className="mt-8 text-meta text-muted">
+            {education.degree}. {education.institution}, {education.year}.
+          </p>
+        </Section>
+
+        <Section title="Skills">
+          <dl className="space-y-4">
+            {skills.map((group) => (
+              <div key={group.group}>
+                <dt className="text-meta text-muted">{group.group}</dt>
+                <dd className="text-body">{group.items.join(', ')}</dd>
+              </div>
+            ))}
+          </dl>
+        </Section>
       </main>
-      <footer className="mx-auto w-full max-w-[38rem] px-6 pb-20" />
+
+      <footer className="mx-auto w-full max-w-[38rem] px-6 pb-20">
+        <h2 className="sr-only">Contact</h2>
+        <ul className="flex flex-wrap gap-x-6 gap-y-2 border-t border-border pt-8">
+          <li>
+            <TextLink href={`mailto:${person.email}`}>Email</TextLink>
+          </li>
+          <li>
+            <TextLink href={person.linkedin} external>
+              LinkedIn
+            </TextLink>
+          </li>
+          <li>
+            <TextLink href={person.github} external>
+              GitHub
+            </TextLink>
+          </li>
+          <li>
+            <TextLink href={person.resumePdf} download>
+              Resume
+            </TextLink>
+          </li>
+        </ul>
+      </footer>
     </>
   )
 }

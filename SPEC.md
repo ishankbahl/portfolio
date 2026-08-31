@@ -57,7 +57,10 @@ only thing between this spec and a deployed URL, and this week shipping was wort
 section. The lines in Experience stayed at four rather than being cut to two, because the cut was
 only defensible while Selected Work existed to carry the detail.
 
-Everything renders from `content/resume.json`. A hardcoded string in a component is a bug.
+Everything renders from `content/resume.json`. A hardcoded string in a component is a bug. Section
+labels like "Experience" are structure rather than content, so they stay in the components. The rule
+exists so that changing what the page says about me is a content commit, and renaming a section is
+not that.
 
 ## The resume PDF
 
