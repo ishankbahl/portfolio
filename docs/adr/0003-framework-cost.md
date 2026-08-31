@@ -13,21 +13,27 @@ a page with an empty `main` and no client components anywhere:
 
 ```
 Route (app)                     Size  First Load JS
-┌ ○ /                          123 B         103 kB
-+ First Load JS shared by all            103 kB
+┌ ○ /                          123 B         102 kB
++ First Load JS shared by all            102 kB
 ```
 
-103 kB gzipped arrives before I write anything. My code was 123 bytes of it.
+102 kB gzipped arrives before I write anything. My code was 123 bytes of it. Two clean builds from a
+deleted `.next` give identical figures, which is the only reason I am willing to write them down.
 
-Two things sit behind that number, and I checked both rather than trusting the build output, because
-the number is the entire point of this ADR. Next reports 103 kB. Gzipping the four chunks the emitted
-HTML actually references gives 100.4 kB, the gap being Next's gzip settings rather than the browser's.
-And there is a fifth chunk of 38.5 kB gzipped polyfills that the build output does not list, which
-carries `noModule`, so no current browser fetches it.
+Two things sit behind that number and I checked both rather than trusting the build output, because
+the number is the entire subject of this ADR. Gzipping the four chunks the emitted HTML references at
+level 9 comes to 99.5 kB, so Next's 102 kB is its own estimate and not a transfer size. And there is
+a fifth chunk the build output never lists: 38.6 kB gzipped of polyfills carrying `noModule`, which no
+current browser fetches. Production will be lower again because Vercel serves brotli, which is why the
+README figures are measured against the deployed URL instead of copied from here.
 
-The first version of this ADR measured 102 kB on 15.5.4. That release turned out to be deprecated
-with a critical advisory against it, so the pin moved to 15.5.24 and the figures above come from the
-version that actually ships. One kilobyte of drift across twenty patch releases.
+For about an hour this ADR said 103 kB. I had moved the pin from 15.5.4 to 15.5.24 because 15.5.4 is
+deprecated with a critical advisory against it, re-measured, and wrote down the result. I had
+re-measured on a dirty `.next`. Two clean builds say 102 kB was right all along and that only the
+route size really moved, 127 B to 123 B, because the page I measured is not the page the first
+measurement used. So the version pin in this ADR changed and the headline number did not. I am
+leaving this paragraph in, because publishing a number from a tree I had not reset, in the document
+whose whole purpose is publishing honest numbers, is worth more as a warning than as a deletion.
 
 ## Decision
 
