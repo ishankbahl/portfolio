@@ -13,27 +13,30 @@ a page with an empty `main` and no client components anywhere:
 
 ```
 Route (app)                     Size  First Load JS
-┌ ○ /                          123 B         102 kB
+┌ ○ /                          127 B         102 kB
 + First Load JS shared by all            102 kB
 ```
 
-102 kB gzipped arrives before I write anything. My code was 123 bytes of it. Two clean builds from a
+102 kB gzipped arrives before I write anything. My code was 127 bytes of it. Two clean builds from a
 deleted `.next` give identical figures, which is the only reason I am willing to write them down.
 
 Two things sit behind that number and I checked both rather than trusting the build output, because
-the number is the entire subject of this ADR. Gzipping the four chunks the emitted HTML references at
-level 9 comes to 99.5 kB, so Next's 102 kB is its own estimate and not a transfer size. And there is
-a fifth chunk the build output never lists: 38.6 kB gzipped of polyfills carrying `noModule`, which no
-current browser fetches. Production will be lower again because Vercel serves brotli, which is why the
-README figures are measured against the deployed URL instead of copied from here.
+the number is the entire subject of this ADR. Gzipping the four shared framework chunks the emitted
+HTML references, at level 9, comes to 99.5 kB, so Next's 102 kB is its own estimate and not a
+transfer size. And there is a chunk the build output never lists: 38.6 kB gzipped of polyfills
+carrying `noModule`, which no current browser fetches.
 
-For about an hour this ADR said 103 kB. I had moved the pin from 15.5.4 to 15.5.24 because 15.5.4 is
-deprecated with a critical advisory against it, re-measured, and wrote down the result. I had
-re-measured on a dirty `.next`. Two clean builds say 102 kB was right all along and that only the
-route size really moved, 127 B to 123 B, because the page I measured is not the page the first
-measurement used. So the version pin in this ADR changed and the headline number did not. I am
-leaving this paragraph in, because publishing a number from a tree I had not reset, in the document
-whose whole purpose is publishing honest numbers, is worth more as a warning than as a deletion.
+This ADR has been wrong twice and both corrections are worth more here than a clean page would be.
+
+It said 103 kB for about an hour. I had moved the pin from 15.5.4 to 15.5.24, because 15.5.4 is
+deprecated with a critical advisory against it, then re-measured on a `.next` I had not deleted and
+wrote the result down. Two clean builds put it back at 102 kB. The version pin changed; the headline
+number never did.
+
+It also said the route was 123 B. That was true when I measured an empty `main`, and stopped being
+true the moment the JSON-LD block and the two analytics components landed. 127 B is the figure this
+page actually emits. A number that was accurate when written is still wrong once the thing it
+describes changes, which is the whole failure mode this document was supposed to guard against.
 
 ## Decision
 

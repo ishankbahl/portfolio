@@ -1,6 +1,6 @@
 import { defineConfig, devices } from '@playwright/test'
 
-// Set BASE_URL to point the same five tests at the deployed site after a release.
+// Set BASE_URL to point the same six tests at the deployed site after a release.
 // Unset, they run against out/ behind serve, which is also what CI does.
 const baseURL = process.env.BASE_URL ?? 'http://localhost:3000'
 const usingLocalBuild = !process.env.BASE_URL

@@ -1,17 +1,28 @@
 @import 'tailwindcss';
 
 /*
-  One accent hue at two lightness values, one per colour scheme. Every text
-  colour below was checked against its own background with a contrast script,
-  not by eye. Worst case is the light accent at 6.54:1, and the dark accent is
-  8.31:1, against a 4.5:1 requirement.
+  Every colour below was checked against its own background with a contrast
+  script, not by eye, in both schemes. The ratios that matter:
+
+    fg on bg            17.62 light / 15.68 dark
+    muted on bg          6.65 light /  7.27 dark
+    accent on bg         6.98 light /  7.00 dark
+    on-accent on accent  7.10 light /  9.32 dark   (the filled button)
+    fg on highlight     12.97 light / 10.54 dark   (the marker)
+
+  on-accent flips because white on the dark scheme's lighter violet is only
+  2.72:1, which fails. The dark button uses near-black text instead.
 */
 :root {
   --bg: #fdfdfc;
   --fg: #15171c;
   --muted: #565b6b;
-  --accent: #1b4fd8;
-  --border: #e4e4df;
+  --accent: #6d28d9;
+  --on-accent: #ffffff;
+  --highlight: #fbcfe8;
+  --card: #ffffff;
+  --border: #e6e4ef;
+  --wash: color-mix(in oklab, var(--accent) 9%, transparent);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -19,8 +30,12 @@
     --bg: #0e1014;
     --fg: #e8e9ec;
     --muted: #9aa0af;
-    --accent: #88a9ff;
-    --border: #242730;
+    --accent: #a78bfa;
+    --on-accent: #0e1014;
+    --highlight: #4a2545;
+    --card: #151821;
+    --border: #262a36;
+    --wash: color-mix(in oklab, var(--accent) 14%, transparent);
   }
 }
 
@@ -33,12 +48,15 @@
   --color-fg: var(--fg);
   --color-muted: var(--muted);
   --color-accent: var(--accent);
+  --color-on-accent: var(--on-accent);
+  --color-highlight: var(--highlight);
+  --color-card: var(--card);
   --color-border: var(--border);
 
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 
-  --text-name: clamp(2rem, 7vw, 2.625rem);
-  --text-name--line-height: 1.08;
+  --text-name: clamp(2.25rem, 8vw, 3.25rem);
+  --text-name--line-height: 1.04;
   --text-lead: 1.125rem;
   --text-lead--line-height: 1.55;
   --text-body: 1rem;
@@ -58,9 +76,46 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/*
+  A soft wash behind the hero. Painted on the body as a fixed background so it
+  cannot reflow anything, which is why it costs nothing in layout shift. Pure
+  CSS, so it costs nothing in JavaScript either.
+*/
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0 0 auto 0;
+  height: 60vh;
+  background: radial-gradient(120% 80% at 85% 0%, var(--wash), transparent 70%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/*
+  The marker highlight. A background gradient sitting behind the lower two
+  thirds of the line box, so it reads as a pen stroke and never affects layout.
+*/
+.marker {
+  background-image: linear-gradient(transparent 58%, var(--highlight) 58%);
+  padding-inline: 0.15em;
+  box-decoration-break: clone;
+}
+
 /* Visible and never removed. */
 :focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
-  border-radius: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /*
+    There is one transition on the page, the link underline colour. This is the
+    only thing there is to switch off, and it exists because the condition in
+    SPEC.md was met rather than because motion was added.
+  */
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+  }
 }

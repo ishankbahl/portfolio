@@ -9,7 +9,7 @@ The default for a project like this is Jest and React Testing Library alongside 
 
 ## Decision
 
-Playwright only. Five tests. No unit layer.
+Playwright only. Six tests. No unit layer.
 
 ## Why
 
@@ -28,7 +28,7 @@ correctly at three viewport widths, which is not an assertion without visual sna
 
 ## Consequence
 
-The suite is slower per test than unit tests and points at a symptom rather than a line. On five
+The suite is slower per test than unit tests and points at a symptom rather than a line. On six
 tests and this much code, finding the line takes under a minute.
 
 This decision is about a static content site with no logic. It is not a general position. The moment

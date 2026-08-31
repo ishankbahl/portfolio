@@ -76,7 +76,7 @@ The page also carries a `Person` JSON-LD block generated from the same JSON.
 ## Performance, measured not asserted
 
 I measured the framework baseline before setting any target. Next.js 15.5.24, App Router, static
-export, a page with no client components: **102 kB gzipped First Load JS, of which 123 bytes was
+export, a page with no client components: **102 kB gzipped First Load JS, of which 127 bytes was
 application code.** That number is the floor and no amount of care on my side moves it.
 
 So the target is not a total. It is the part I control.
@@ -99,9 +99,11 @@ it is the two analytics components. My own code is 0.00 kB.** Every component on
 those two is a server component, so none of them reach the browser. I expected to be writing "most
 of it is analytics" here and the honest number turned out to be all of it.
 
-The gate is a script rather than a number I read off the build output. It takes the chunk list for `/`
-from `.next/app-build-manifest.json`, drops the chunks in the shared framework set, gzips what is
-left, sums it, and exits non-zero over 6144 bytes. It prints the analytics share on its own line, so
+The gate is a script rather than a number I read off the build output. It reads the scripts
+`out/index.html` actually references, drops the shared framework chunks listed in
+`.next/build-manifest.json`, gzips what is left, sums it, and exits non-zero over 6144 bytes. It
+measures the html rather than the build manifest because the two disagree: the manifest lists a page
+chunk the html never references, since the page ships no client code. It prints the analytics share on its own line, so
 the figure in the README and the figure CI enforces come from one measurement instead of two that can
 disagree.
 
@@ -110,7 +112,7 @@ went up and by how much. It does not get met by quietly dropping Speed Insights.
 because it is true, not because it is small.
 
 CI runs `tsc --noEmit`, ESLint, the production build, the application JavaScript assertion, and the
-five Playwright tests. An earlier draft of this section left the tests off that list while Done when
+six Playwright tests. An earlier draft of this section left the tests off that list while Done when
 below required them green in CI, so one of the two was wrong.
 
 Layout shift is held at zero by `next/font` with `adjustFontFallback`, which overrides the fallback
@@ -132,8 +134,8 @@ There are no images rendered on this page. The Open Graph image is referenced in
 rendered, so it costs nothing.
 
 If one is ever added, use a plain `<img>` with explicit `width`, `height` and `loading="lazy"`, not
-`next/image`. Two measured reasons. `next/image` added 5.44 kB to the route in my own build, which is
-more than the entire application budget below. And under `output: 'export'` it silently emits
+`next/image`. Two measured reasons. `next/image` added 5.39 kB to the route in my own build, which is most of
+the 6 kB application budget above, for a component this page has no use for. And under `output: 'export'` it silently emits
 `/_next/image?url=...` URLs that have no server to answer them, so the build passes and the images
 404 in production. Setting `images: { unoptimized: true }` fixes the URLs but not the 5.44 kB, and at
 that point the component is doing nothing a plain tag does not.
@@ -159,21 +161,38 @@ useful Core Web Vitals data. That was my mistake and this is the correction.
 
 The page has to look designed, not templated. Constraints so this does not drift:
 
-One column, left aligned, generous whitespace. One accent hue, on links and the focus ring and
-nothing else. A real type scale, body line height 1.6, measure capped around 68 characters. A spacing
-scale used consistently. The vertical gap between sections is clearly larger than the gap inside them.
+One column, left aligned, generous whitespace. A real type scale, body line height 1.6, measure
+capped around 68 characters. A spacing scale used consistently. The vertical gap between sections is
+clearly larger than the gap inside them.
 
-The accent is one hue at two lightness values, one per colour scheme. I wanted it to be a single hex
-and it cannot be. A hex that clears 4.5:1 against both a near white and a near black background
-exists, and it is a dull mid blue that looks wrong in light mode. Holding the contrast ratio matters
-more than holding the sentence, so the sentence changed.
+**Palette.** One accent hue at two lightness values, one per colour scheme, plus one highlight colour
+for the marker on the hero headline. This started as "one accent colour, on links and the focus ring
+and nothing else" and that is no longer what the page does. It is now on links, the focus ring, the
+primary button fill and the list markers, with a second colour behind the headline.
+
+I widened it deliberately, and the reason is not decoration. With the accent as the only cue, links
+sat at 2.5:1 against body text, under the 3:1 WCAG asks for when colour carries the meaning alone.
+A filled button for the primary action and a permanent underline on text links fix that with shape
+rather than colour. The old underline used the border colour at 1.25:1 against the background, which
+is to say it was not visible at all.
+
+Every colour is checked by script in both schemes, not by eye. The one that constrains the design is
+the filled button: white on the dark scheme's lighter violet is 2.72:1 and fails, so the dark button
+uses near-black text. Same component, one token flipped.
+
+**Also on the page now, and not in the first draft of this spec:** a soft radial wash behind the
+hero, rounded cards for the experience entries, and pill shapes for the skills. All three are CSS,
+so they cost no JavaScript, and the wash is painted on a fixed pseudo element so it cannot move
+anything and cannot affect layout shift.
+
+**Still not on this page:** stock illustration, skill percentage bars, star ratings, terminal typing
+effects, animation library, scroll effects, photography. The bars and ratings stay banned because
+they assert a precision nobody can defend. A pill is the word with a border round it and claims
+nothing.
 
 One variable font, self hosted with `next/font/local` from a woff2 committed to the repo, with
 `adjustFontFallback` set. Pulling it from Google Fonts at build time would put a network call in the
 CI path and buy nothing, and a font fetch is a bad reason for a red build.
-
-Not on this page: gradient blobs, glassmorphism, stock illustration, skill percentage bars, star
-ratings, terminal typing effects.
 
 Mobile first. Design at 360 px, check 768 and 1440.
 
@@ -203,7 +222,7 @@ rather than the test being squeezed into another one to protect the number.
 
 Test 3 runs twice because one run only ever sees the palette the browser happens to be in, which is
 light. Dark mode is a second set of colours and an axe run that never loads them is not evidence
-about them. It is one test of five in this list and two cases in the runner, which reports six, and
+about them. It is one test of six in this list and two cases in the runner, which reports seven, and
 it is two cases rather than one loop so a failure says which scheme broke.
 
 That second run is not theoretical. I dropped the dark accent to a failing colour and rebuilt: light
@@ -217,7 +236,7 @@ alternative was finding that out on the first push to CI and assuming I had brok
 `next start` refuses to run under `output: 'export'`, so the suite runs against `out/` behind `serve`
 as a dev dependency. That server is not incidental. Test 2 asserts a content type, and a content type
 comes from whatever is serving the file, so the server is part of what test 2 covers. A `BASE_URL`
-variable aims the same five tests at production once, after deploy.
+variable aims the same six tests at production once, after deploy.
 
 No unit tests. Reasoning in `docs/adr/0002-no-unit-tests.md`.
 
@@ -228,9 +247,11 @@ This was ten. The five I removed had no failure mode. Reasoning in ADR 0002.
 One `h1`, heading levels do not skip. Landmark elements. Contrast checked with a tool in both colour
 schemes, not by eye in one of them. A skip link. Focus visible and never removed.
 
-No `prefers-reduced-motion` block unless a hover transition survives the build. Nothing on this page
-animates, so the media query would be guarding an empty room. That is the argument I used to cut five
-tests and it applies to a line in my own spec.
+`prefers-reduced-motion` is respected. This spec originally said the block was unnecessary because
+nothing on the page animates, and set the condition "unless a hover transition survives the build".
+Two transitions survived, on the link underline colour and the button opacity, so the condition was
+met and the block is in. A colour transition is not motion and nobody is harmed by it, but the rule
+said what it said, and honouring it costs four lines of CSS.
 
 Automated checks are test 3. They catch roughly a third of WCAG criteria, so keyboard order, heading
 structure and contrast are also checked by hand. I am not claiming enforced AA conformance from an

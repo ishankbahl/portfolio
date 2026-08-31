@@ -12,7 +12,7 @@ Working rules for this repository. `SPEC.md` is what to build. This is how.
 - **No content hardcoded in components.** Everything comes from `content/resume.json`.
 - **No `any`.** Strict mode stays on.
 - **No `next/image`.** The page renders no images. If one is added, use a plain `<img>` with explicit
-  `width`, `height` and `loading="lazy"`. `next/image` costs 5.44 kB of route JavaScript and under
+  `width`, `height` and `loading="lazy"`. `next/image` costs 5.39 kB of route JavaScript and under
   `output: 'export'` it emits `/_next/image` URLs with no server to answer them. See the Images
   section of `SPEC.md`.
 - **Never edit `public/ishank-bahl-resume.pdf`.** It is the ATS tested artefact.
