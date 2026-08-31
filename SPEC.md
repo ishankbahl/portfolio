@@ -73,7 +73,7 @@ The page also carries a `Person` JSON-LD block generated from the same JSON.
 ## Performance, measured not asserted
 
 I measured the framework baseline before setting any target. Next.js 15.5.24, App Router, static
-export, a page with no client components: **103 kB gzipped First Load JS, of which 123 bytes was
+export, a page with no client components: **102 kB gzipped First Load JS, of which 123 bytes was
 application code.** That number is the floor and no amount of care on my side moves it.
 
 So the target is not a total. It is the part I control.
