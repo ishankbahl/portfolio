@@ -5,8 +5,8 @@ import { resume } from '@/lib/resume'
 import './globals.css'
 
 /*
-  Self hosted from a 47 kB latin subset in this repo rather than fetched from
-  Google at build time, so no build of this site can go red because a font CDN
+  Self hosted from a 47 kB latin subset committed to this repo rather than
+  fetched from Google at build time, so no build can go red because a font CDN
   was slow. adjustFontFallback overrides Arial's metrics to match Inter's, which
   is what holds layout shift at zero across the swap.
 */
@@ -19,8 +19,31 @@ const inter = localFont({
   adjustFontFallback: 'Arial',
 })
 
+const { person } = resume
+const title = `${person.name}, ${person.headline}`
+
 export const metadata: Metadata = {
-  title: resume.person.name,
+  // metadataBase is what turns the relative og:image below into an absolute url.
+  // A relative one passes a presence check and then renders no link preview.
+  metadataBase: new URL(person.siteUrl),
+  title,
+  description: person.positioning,
+  alternates: { canonical: '/' },
+  openGraph: {
+    type: 'profile',
+    url: '/',
+    siteName: person.name,
+    title,
+    description: person.positioning,
+    images: [{ url: '/og.png', width: 1200, height: 630, alt: title }],
+  },
+  twitter: {
+    // No site handle on purpose. I am not putting a dormant one in a meta tag.
+    card: 'summary_large_image',
+    title,
+    description: person.positioning,
+    images: ['/og.png'],
+  },
 }
 
 export default function RootLayout({ children }: { children: ReactNode }) {
