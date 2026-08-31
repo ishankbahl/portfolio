@@ -15,16 +15,22 @@
 import { readdirSync, readFileSync, statSync } from 'node:fs'
 import path from 'node:path'
 
-const ROOTS = ['content', 'app', 'public', 'lib', 'tests', 'scripts', 'README.md']
+// Scan everything and exclude, rather than list roots. The listed version
+// silently omitted components/, where a forgotten marker is most likely.
+const ROOTS = ['.']
+const SKIP_DIRS = new Set(['node_modules', '.next', 'out', '.git', 'test-results', 'playwright-report'])
 const MARKERS = /\b(TODO|FIXME|MEASURE|XXX)\b/
-const SKIP_FILES = new Set(['scripts/check-placeholders.mjs'])
-const BINARY = /\.(woff2|pdf|png|jpg|ico)$/
+const SKIP_FILES = new Set(['scripts/check-placeholders.mjs', 'SPEC.md'])
+const BINARY = /\.(woff2|pdf|png|jpe?g|ico|svg|webp|gif|lock|yaml)$/
 
 const files = []
 const walk = (entry) => {
   if (!statSync(entry, { throwIfNoEntry: false })) return
   if (statSync(entry).isDirectory()) {
-    for (const child of readdirSync(entry)) walk(path.join(entry, child))
+    for (const child of readdirSync(entry)) {
+      if (SKIP_DIRS.has(child)) continue
+      walk(path.join(entry, child) === './' + child ? child : path.join(entry, child))
+    }
     return
   }
   if (!BINARY.test(entry) && !SKIP_FILES.has(entry)) files.push(entry)

@@ -1,19 +1,8 @@
 import { expect, test } from '@playwright/test'
 
-/*
-  Vercel Web Analytics and Speed Insights fetch their scripts from /_vercel/,
-  which the Vercel platform serves and this build does not contain, falling back
-  to va.vercel-scripts.com when it detects it is not on Vercel. Either way they
-  404 anywhere except production.
-
-  That produces two separate signals and the exception has to cover both: the
-  failed request itself, and the "Failed to load resource" the browser logs to
-  the console because of it. Filtering only the first is what I did initially,
-  and the test still went red on the second.
-
-  This test asks whether my page loaded cleanly. It is not a monitor for whether
-  Vercel's CDN is up.
-*/
+// The Vercel analytics scripts 404 outside production. A 404 produces two
+// signals, the failed request and the console error it causes, so both are
+// filtered, and so is the CDN host the script falls back to.
 const servedByVercelNotByUs = (url: string) => {
   if (!url) return false
   try {
@@ -49,13 +38,8 @@ test('no console errors and no failed requests on load', async ({ page }) => {
   expect(consoleErrors, 'console errors on load').toEqual([])
   expect(failedRequests, 'failed or 4xx/5xx requests on load').toEqual([])
 
-  /*
-    Checked explicitly because the listeners above cannot see it. Headless
-    Chromium does not make the automatic /favicon.ico request a real browser
-    makes, so this test reported a clean load while every real visitor took a
-    404. Lighthouse found it in production, not this test, which is the blind
-    spot this assertion closes.
-  */
+  // Headless Chromium skips the implicit /favicon.ico request a real browser
+  // makes, so this asks for the declared icon directly.
   const iconHref = await page.locator('link[rel="icon"]').first().getAttribute('href')
   expect(iconHref, 'the page must declare an icon, or browsers fall back to /favicon.ico').toBeTruthy()
 

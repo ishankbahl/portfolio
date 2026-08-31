@@ -1,17 +1,11 @@
 @import 'tailwindcss';
 
 /*
-  Every colour below was checked against its own background with a contrast
-  script, not by eye, in both schemes. The ratios that matter:
+  `pnpm contrast` reads these hex values and asserts the WCAG ratios, so the
+  palette cannot drift past a threshold silently.
 
-    fg on bg            17.62 light / 15.68 dark
-    muted on bg          6.65 light /  7.27 dark
-    accent on bg         6.98 light /  7.00 dark
-    on-accent on accent  7.10 light /  9.32 dark   (the filled button)
-    fg on highlight     12.97 light / 10.54 dark   (the marker)
-
-  on-accent flips because white on the dark scheme's lighter violet is only
-  2.72:1, which fails. The dark button uses near-black text instead.
+  on-accent flips between schemes because white on the dark scheme's lighter
+  violet is 2.72:1 and fails. The dark button uses near-black text.
 */
 :root {
   --bg: #fdfdfc;
@@ -19,7 +13,6 @@
   --muted: #565b6b;
   --accent: #6d28d9;
   --on-accent: #ffffff;
-  --highlight: #fbcfe8;
   --card: #ffffff;
   --border: #e6e4ef;
   --wash: color-mix(in oklab, var(--accent) 9%, transparent);
@@ -32,7 +25,6 @@
     --muted: #9aa0af;
     --accent: #a78bfa;
     --on-accent: #0e1014;
-    --highlight: #4a2545;
     --card: #151821;
     --border: #262a36;
     --wash: color-mix(in oklab, var(--accent) 14%, transparent);
@@ -49,16 +41,20 @@
   --color-muted: var(--muted);
   --color-accent: var(--accent);
   --color-on-accent: var(--on-accent);
-  --color-highlight: var(--highlight);
   --color-card: var(--card);
   --color-border: var(--border);
 
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 
-  --text-name: clamp(2.25rem, 8vw, 3.25rem);
-  --text-name--line-height: 1.04;
-  --text-lead: 1.125rem;
-  --text-lead--line-height: 1.55;
+  --container-page: 64rem;
+  --container-prose: 34rem;
+
+  --text-name: clamp(2.5rem, 7vw, 4rem);
+  --text-name--line-height: 1.02;
+  --text-lead: clamp(1.25rem, 2.4vw, 1.5rem);
+  --text-lead--line-height: 1.4;
+  --text-section: 1.375rem;
+  --text-section--line-height: 1.2;
   --text-body: 1rem;
   --text-body--line-height: 1.6;
   --text-meta: 0.8125rem;
@@ -86,19 +82,23 @@ body::before {
   position: fixed;
   inset: 0 0 auto 0;
   height: 60vh;
-  background: radial-gradient(120% 80% at 85% 0%, var(--wash), transparent 70%);
+  background: radial-gradient(90% 70% at 75% 0%, var(--wash), transparent 72%);
   pointer-events: none;
   z-index: -1;
 }
 
-/*
-  The marker highlight. A background gradient sitting behind the lower two
-  thirds of the line box, so it reads as a pen stroke and never affects layout.
-*/
-.marker {
-  background-image: linear-gradient(transparent 58%, var(--highlight) 58%);
-  padding-inline: 0.15em;
-  box-decoration-break: clone;
+@utility max-w-page {
+  max-width: var(--container-page);
+}
+
+@utility max-w-prose-measure {
+  max-width: var(--container-prose);
+}
+
+/* One band with its own surface, so the page is not a single continuous column. */
+.band {
+  background-color: var(--card);
+  border-block: 1px solid var(--border);
 }
 
 /* Visible and never removed. */
@@ -108,11 +108,6 @@ body::before {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  /*
-    There is one transition on the page, the link underline colour. This is the
-    only thing there is to switch off, and it exists because the condition in
-    SPEC.md was met rather than because motion was added.
-  */
   *,
   *::before,
   *::after {

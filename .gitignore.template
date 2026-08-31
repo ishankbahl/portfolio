@@ -1,8 +1,0 @@
-_private/
-private/
-node_modules
-.next
-out
-.env*
-test-results
-playwright-report

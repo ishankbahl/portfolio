@@ -37,21 +37,32 @@ visitor downloads is the framework and two analytics libraries.
 
 ```
 app/
-  layout.tsx           html shell, metadata, font loading, skip link, analytics
-  page.tsx             composes the sections, no markup of its own
+  layout.tsx           html shell, metadata, font loading, skip link, header, analytics
+  page.tsx             composes the sections, owns the page bands
+  not-found.tsx        styled 404, since the CDN serves it for any mistyped url
   globals.css          design tokens, colour schemes, focus ring
   robots.ts            generates robots.txt at build (needs force-static under export)
   icon.svg             favicon
   fonts/               committed Inter latin subset + OFL licence
-components/            presentational server components
+components/
+  SiteHeader.tsx       sticky header, in-page nav, resume action
+  Hero.tsx             two column hero: copy left, photo and facts card right
+  Intro.tsx            prose
+  Skills.tsx           grouped pills
+  SelectedWork.tsx     three cards: problem, what I built, decision and its cost
+  Experience.tsx       employment history
+  SiteFooter.tsx       contact links
+  Section.tsx          section shell, wires aria-labelledby for the landmark
+  TextLink.tsx         the two link styles
 lib/
   resume.ts            typed content accessor
   person-json-ld.ts    schema.org Person built from the same JSON the page renders
 content/resume.json    all content
-public/                resume PDF, Open Graph image
-tests/                 6 Playwright specs
+public/                resume PDF, hero photo, Open Graph image, favicon
+tests/                 6 Playwright specs, 7 cases
 scripts/
   check-js-budget.mjs  CI gate on application JavaScript
+  check-contrast.mjs   asserts WCAG ratios from the hex values in globals.css
   generate-og.mjs      regenerates the Open Graph image
   check-placeholders.mjs  fails if placeholder markers remain
 docs/adr/              three decision records
@@ -67,8 +78,9 @@ docs/adr/              three decision records
   preview cannot drift from the site.
 - Resume PDF served as a static asset with a text layer intact, so applicant tracking systems can
   parse it.
+- Selected work: three cards naming a problem, what I built, and one decision with what it cost.
 - Accessibility: one `h1`, no heading skips, named landmarks, working skip link, visible focus,
-  contrast verified by script in both schemes.
+  contrast asserted by script in both schemes.
 
 ## Constraints
 
@@ -92,15 +104,17 @@ Measured against the deployed URL.
 | Framework baseline, First Load JS | 102 kB gzipped |
 | Application JavaScript | 2.34 kB, all of it the two analytics libraries |
 | Route JS emitted for `/` | 127 B |
-| Transfer, first visit, cold cache, brotli | ~168 kB over 10 requests |
+| Transfer, first visit, cold cache, brotli | ~221 kB over 11 requests |
 | Lighthouse mobile | performance 98 to 100, accessibility 100, best practices 100, SEO 100 |
 | Cumulative Layout Shift | 0 |
-| Largest Contentful Paint | 1.11 to 1.81 s across four runs, against a 1.5 s target |
+| Largest Contentful Paint | 1.47 s, against a 1.5 s target. 0.60 s without the hero photo |
 
-LCP misses the target in roughly half the runs. Lighthouse simulates throttling rather than applying
-it, and the figure moves 700 ms between runs on a page whose largest element is text delivered in the
-HTML. Measured with throttling actually applied it is 0.71 s. Both numbers are here because neither
-alone is the whole picture.
+The hero photo is the LCP element and it costs 0.87 s. Measured both ways on a 4x CPU and Slow 4G
+profile: 0.60 s with the image blocked, 1.47 s with it. That is inside the 1.5 s target with very
+little room, and the photo is what stops the page reading as a formatted CV. Lighthouse simulates
+throttling rather than applying it and runs pessimistic, so its figure for the same page is higher.
+
+Layout shift is 0 either way, because the `img` carries its real intrinsic `width` and `height`.
 
 102 kB of the total is the framework and arrives before any application code. See
 [ADR 0003](docs/adr/0003-framework-cost.md).
@@ -130,6 +144,9 @@ than the build manifest because the two disagree: the manifest lists a page chun
 references, since the page ships no client code.
 
 `pnpm og` regenerates `public/og.png`. Run it when the name, positioning line or site URL changes.
+
+`pnpm contrast` asserts the WCAG ratios, reading the hex values out of `app/globals.css` so the check
+cannot drift from the palette.
 
 `pnpm check:placeholders` fails if any placeholder marker is left in the tree.
 

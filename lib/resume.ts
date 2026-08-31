@@ -1,5 +1,12 @@
 import data from '@/content/resume.json'
 
+export interface Photo {
+  src: string
+  width: number
+  height: number
+  alt: string
+}
+
 export interface Person {
   name: string
   headline: string
@@ -10,6 +17,7 @@ export interface Person {
   linkedin: string
   resumePdf: string
   siteUrl: string
+  photo: Photo
 }
 
 export interface ExternalLink {
@@ -20,13 +28,20 @@ export interface ExternalLink {
 export interface ExperienceEntry {
   company: string
   title: string
-  /**
-   * Display copy, not a date pair. Formatting "2019-06" and a null end date in a
-   * component is the one branch ADR 0002 says would earn a unit layer, so the
-   * string lives in the content file and the components stay logic free.
-   */
+  /** Display copy, e.g. "Jun 2024 to present". Keeps date formatting out of components. */
   period: string
   lines: string[]
+  link?: ExternalLink
+}
+
+export interface WorkCard {
+  id: string
+  company: string
+  period: string
+  problem: string
+  whatIBuilt: string
+  decision: string
+  stack: string[]
   link?: ExternalLink
 }
 
@@ -44,11 +59,12 @@ export interface Education {
 export interface Resume {
   person: Person
   intro: string[]
+  selectedWork: WorkCard[]
   experience: ExperienceEntry[]
   skills: SkillGroup[]
   education: Education
 }
 
-// Annotated rather than asserted, so a shape drift in the json fails typecheck
-// instead of failing in the browser.
+// Annotated, not asserted: a missing or retyped key fails typecheck. Extra keys
+// still pass, which is the limit of this approach.
 export const resume: Resume = data

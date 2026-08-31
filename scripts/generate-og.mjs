@@ -11,16 +11,28 @@
   on which machine it runs on.
 */
 import { readFileSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
 import { chromium } from '@playwright/test'
 
 const resume = JSON.parse(readFileSync(new URL('../content/resume.json', import.meta.url)))
 const font = readFileSync(new URL('../app/fonts/inter-latin-variable.woff2', import.meta.url))
 const { name, positioning, siteUrl } = resume.person
 
+const css = readFileSync(new URL('../app/globals.css', import.meta.url), 'utf8')
+const token = (n) => {
+  const m = css.match(new RegExp(`--${n}:\\s*(#[0-9a-fA-F]{6})`))
+  if (!m) throw new Error(`could not read --${n} from app/globals.css`)
+  return m[1]
+}
+const bg = token('bg')
+const fg = token('fg')
+const muted = token('muted')
+const accent = token('accent')
+
 const escape = (value) =>
   value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 
-// Same tokens as app/globals.css. If the palette moves, it moves in both.
+// Palette read from app/globals.css so the card cannot drift from the site.
 const html = `<!doctype html>
 <html><head><meta charset="utf-8"><style>
   @font-face {
@@ -31,14 +43,14 @@ const html = `<!doctype html>
   * { margin: 0; box-sizing: border-box; }
   body {
     width: 1200px; height: 630px;
-    background: #fdfdfc; color: #15171c;
+    background: ${bg}; color: ${fg};
     font-family: 'Inter', sans-serif;
     padding: 88px 96px;
     display: flex; flex-direction: column; justify-content: space-between;
   }
   h1 { font-size: 92px; line-height: 1.05; font-weight: 600; letter-spacing: -0.03em; }
-  p  { font-size: 34px; line-height: 1.4; color: #565b6b; max-width: 940px; margin-top: 32px; }
-  .host { font-size: 26px; color: #1b4fd8; }
+  p  { font-size: 34px; line-height: 1.4; color: ${muted}; max-width: 940px; margin-top: 32px; }
+  .host { font-size: 26px; color: ${accent}; }
 </style></head>
 <body>
   <div>
@@ -52,7 +64,7 @@ const browser = await chromium.launch()
 const page = await browser.newPage({ viewport: { width: 1200, height: 630 }, deviceScaleFactor: 1 })
 await page.setContent(html, { waitUntil: 'load' })
 await page.evaluate(() => document.fonts.ready)
-await page.screenshot({ path: new URL('../public/og.png', import.meta.url).pathname })
+await page.screenshot({ path: fileURLToPath(new URL('../public/og.png', import.meta.url)) })
 await browser.close()
 
 console.log('wrote public/og.png at 1200x630')

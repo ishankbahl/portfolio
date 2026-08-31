@@ -1,37 +1,23 @@
-import type { Education, ExperienceEntry } from '@/lib/resume'
+import type { ExperienceEntry } from '@/lib/resume'
 import { Section } from './Section'
 import { TextLink } from './TextLink'
 
-export function Experience({
-  experience,
-  education,
-}: {
-  experience: ExperienceEntry[]
-  education: Education
-}) {
+export function Experience({ experience }: { experience: ExperienceEntry[] }) {
   return (
     <Section id="experience" title="Experience">
       <ol className="space-y-4">
         {experience.map((role, index) => (
-          // Index keys because this list is static and never reorders. Content
-          // derived keys collide the day two lines share a prefix, and a
-          // duplicate key warning would fail the no-console-errors test on an
-          // edit that only touched copy.
           <li
             key={index}
-            className="rounded-xl border border-border bg-card px-5 py-4 sm:px-6 sm:py-5"
+            className="rounded-xl border border-border bg-card px-5 py-5 transition-colors hover:border-accent/50 sm:px-6"
           >
-            <div className="flex flex-wrap items-baseline justify-between gap-x-4">
-              <h3 className="font-medium">{role.company}</h3>
-              <p className="text-meta text-muted">{role.period}</p>
-            </div>
+            {/* Period above the name, so a long company name cannot reflow the
+                header into a different shape from the sibling cards. */}
+            <p className="text-meta text-muted">{role.period}</p>
+            <h3 className="mt-1 text-body font-medium">{role.company}</h3>
             <p className="text-meta text-muted">{role.title}</p>
 
-            {/*
-              Markers, because without them the gap between items is smaller
-              than the leading inside a wrapped item and the list stops reading
-              as a list. Worst at 360 px, where items run to three lines.
-            */}
+            {/* Markers, or the item gap reads smaller than the leading inside a wrapped item. */}
             <ul className="mt-3 list-outside list-disc space-y-2 ps-5 marker:text-accent">
               {role.lines.map((line, lineIndex) => (
                 <li key={lineIndex} className="text-body">
@@ -51,9 +37,7 @@ export function Experience({
         ))}
       </ol>
 
-      <p className="mt-6 text-meta text-muted">
-        {education.degree}. {education.institution}, {education.year}.
-      </p>
+
     </Section>
   )
 }

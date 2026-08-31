@@ -1,42 +1,45 @@
 import { Experience } from '@/components/Experience'
 import { Hero } from '@/components/Hero'
 import { Intro } from '@/components/Intro'
+import { SelectedWork } from '@/components/SelectedWork'
 import { Skills } from '@/components/Skills'
-import { SiteFooter } from '@/components/SiteFooter'
 import { personJsonLd } from '@/lib/person-json-ld'
 import { resume } from '@/lib/resume'
 
-/**
- * Composition only. Every section reads from the same content file and this file
- * owns no markup of its own beyond the page column, so adding or reordering a
- * section is one line here.
- */
 export default function Home() {
-  const { person, intro, experience, skills, education } = resume
+  const { person, intro, selectedWork, experience, skills, education } = resume
 
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: personJsonLd() }} />
 
-      {/*
-        tabIndex -1 so the skip link actually moves focus. main is not focusable
-        by default, so activating the link moved the hash and left activeElement
-        on body in both engines. Chromium masks that by continuing sequential
-        focus from the fragment target anyway; WebKit does not, so in Safari the
-        next Tab went back to the top. Covered by tests/skip-link.spec.ts.
-      */}
-      <main
-        id="main"
-        tabIndex={-1}
-        className="mx-auto w-full max-w-[42rem] px-6 py-20 focus:outline-none sm:py-28"
-      >
-        <Hero person={person} />
-        <Intro paragraphs={intro} />
-        <Experience experience={experience} education={education} />
-        <Skills skills={skills} />
-      </main>
+      {/* Focusable so the skip link can move focus here. See tests/skip-link.spec.ts. */}
+      <main id="main" tabIndex={-1} className="focus:outline-none">
+        <div className="mx-auto w-full max-w-page px-6 pt-16 pb-24 sm:pt-20">
+          <Hero
+            person={person}
+            lead={person.positioning}
+            experience={experience}
+            education={education}
+          />
+        </div>
 
-      <SiteFooter person={person} />
+        {/*
+          One band with its own surface. Without it every section sits on the
+          same background at the same width and the page reads as one document.
+        */}
+        <div className="band">
+          <div className="mx-auto w-full max-w-page px-6 pt-4 pb-24">
+            <Intro paragraphs={intro} />
+            <Skills skills={skills} />
+          </div>
+        </div>
+
+        <div className="mx-auto w-full max-w-page px-6 pt-4 pb-24">
+          <SelectedWork cards={selectedWork} />
+          <Experience experience={experience} />
+        </div>
+      </main>
     </>
   )
 }

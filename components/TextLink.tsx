@@ -1,19 +1,8 @@
 import type { ReactNode } from 'react'
 
 /**
- * The only two link styles on the page.
- *
- * `text` carries a permanent underline in the accent colour. It used to
- * underline in the border colour, which is 1.25:1 against the background and
- * therefore invisible, which left colour as the only cue that something is a
- * link. The accent is 2.5:1 against body text, under the 3:1 WCAG requires when
- * colour is the sole indicator, so the underline is load bearing rather than
- * decorative. Hover deepens it.
- *
- * `button` is the filled variant, used once, for the primary action.
- *
- * External links get target, rel and a screen reader only warning here so no
- * caller has to remember any of it.
+ * The accent is 2.5:1 against body text, under the 3:1 WCAG asks when colour is
+ * the only cue that something is a link, so the underline is load bearing.
  */
 export function TextLink({
   href,

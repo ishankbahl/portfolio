@@ -14,7 +14,8 @@
     "budget": "node scripts/check-js-budget.mjs",
     "og": "node scripts/generate-og.mjs",
     "test:e2e": "playwright test",
-    "check:placeholders": "node scripts/check-placeholders.mjs"
+    "check:placeholders": "node scripts/check-placeholders.mjs",
+    "contrast": "node scripts/check-contrast.mjs"
   },
   "dependencies": {
     "@vercel/analytics": "^2.0.1",

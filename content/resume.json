@@ -8,11 +8,66 @@
     "github": "https://github.com/ishankbahl",
     "linkedin": "https://www.linkedin.com/in/ishank-bahl-53bb79108/",
     "resumePdf": "/ishank-bahl-resume.pdf",
-    "siteUrl": "https://portfolio-six-azure-25.vercel.app"
+    "siteUrl": "https://portfolio-six-azure-25.vercel.app",
+    "photo": {
+      "src": "/ishank-bahl.webp",
+      "width": 420,
+      "height": 525,
+      "alt": "Ishank Bahl"
+    }
   },
   "intro": [
     "I work on the parts of a system other teams depend on. That has meant a hierarchical configuration model and a React micro-frontend that had to live inside an Angular host, the home and discovery surfaces of a streaming product, and the feature flag SDK that server side experiments call.",
     "I write the services and data models behind those interfaces too, in Node, Python and SQL, and I have owned the infrastructure they run on. The work is the contract underneath the screen rather than the screen: what a team can change safely, what breaks when they do, and who finds out."
+  ],
+  "selectedWork": [
+    {
+      "id": "netskope",
+      "company": "Netskope",
+      "period": "2024 to present",
+      "problem": "Configuration was flat, with no way to express a default at one level and an override at another, and a new React surface had to ship inside an Angular application nobody was going to rewrite.",
+      "whatIBuilt": "I designed the hierarchical configuration model and the resolution order that decides which level wins, then integrated a React micro-frontend into the Angular host through Module Federation so the two could release on separate cycles. I also built the Slack assistant that reads on-call context and drafts triage and patch steps.",
+      "decision": "I put the React surface behind Module Federation rather than rebuilding it as an Angular component. The two applications ship independently now. It cost a shared dependency contract that has to be kept in step, and a second build to reason about when production breaks.",
+      "stack": [
+        "React",
+        "TypeScript",
+        "Angular",
+        "Module Federation",
+        "Node.js"
+      ]
+    },
+    {
+      "id": "hotstar",
+      "company": "Disney+ Hotstar",
+      "period": "2022 to 2024",
+      "problem": "Home and discovery carried a growing set of trays, each built its own way, so every new one started near scratch and behaved slightly differently from the last.",
+      "whatIBuilt": "I led the continue watching tray, the watchlist tray and the details overlay, then pulled what they had in common into platform components the rest of home and discovery were built from. It is the first screen of every session, so a regression there is not a quiet one.",
+      "decision": "I made the tray components take their data already shaped instead of letting each one fetch and normalise its own. That removed a class of inconsistency between trays. It cost a coordination step: adding a tray means touching the layer that assembles the data, not dropping a component in.",
+      "stack": [
+        "React",
+        "Next.js",
+        "Redux",
+        "TypeScript"
+      ]
+    },
+    {
+      "id": "vwo",
+      "company": "Wingify (VWO)",
+      "period": "2019 to 2022",
+      "problem": "VWO could experiment on the frontend but not behind an API, so anything decided on the server was untestable.",
+      "whatIBuilt": "I co-wrote the Node SDK, the library an application calls to evaluate a flag and report which variation a user got, and wrote the frontend architecture for the product around it. It is Apache 2.0 on GitHub with my name in the authors list, so this is the one card here whose code you can read.",
+      "decision": "We kept one package serving both the server and the browser instead of splitting it in two. One behaviour to document and test. It cost the browser build a size budget the server never needed, which is why that repo carries a gzipped size badge.",
+      "stack": [
+        "Node.js",
+        "TypeScript",
+        "React",
+        "Webpack"
+      ],
+      "link": {
+        "label": "vwo-node-sdk",
+        "url": "https://github.com/wingify/vwo-node-sdk"
+      }
+    }
   ],
   "experience": [
     {
@@ -22,7 +77,7 @@
       "lines": [
         "Architected a hierarchical configuration system and integrated a React micro-frontend into an Angular host application.",
         "Built an LLM powered Slack assistant that automated on-call triage and patch workflows.",
-        "Built and integrated backend APIs across Node.js, Python, PHP, Java and SQL.",
+        "Built and integrated backend APIs across Node.js, PHP and SQL.",
         "Owned infrastructure projects end to end and mentored the developers on them."
       ]
     },
@@ -46,15 +101,65 @@
         "Wrote the frontend architecture and co-wrote the open source Node.js SDK.",
         "Integrated VWO with third party applications."
       ],
-      "link": { "label": "vwo-node-sdk", "url": "https://github.com/wingify/vwo-node-sdk" }
+      "link": {
+        "label": "vwo-node-sdk",
+        "url": "https://github.com/wingify/vwo-node-sdk"
+      }
     }
   ],
   "skills": [
-    { "group": "Languages and frameworks", "items": ["TypeScript", "JavaScript", "React", "Next.js", "Redux", "Node.js", "Angular", "Python", "HTML", "CSS"] },
-    { "group": "Frontend architecture", "items": ["Micro-frontends", "Module Federation", "Webpack", "Server side rendering", "Core Web Vitals", "Design systems"] },
-    { "group": "Backend and data", "items": ["REST API design", "SQL", "Data modelling", "Feature flags and experimentation"] },
-    { "group": "AI tooling", "items": ["Claude Code", "LLM application design", "MCP"] },
-    { "group": "Testing and delivery", "items": ["Playwright", "Jest", "GitHub Actions", "Vercel"] }
+    {
+      "group": "Languages and frameworks",
+      "items": [
+        "TypeScript",
+        "JavaScript",
+        "React",
+        "Next.js",
+        "Redux",
+        "Node.js",
+        "Angular",
+        "Python",
+        "HTML",
+        "CSS"
+      ]
+    },
+    {
+      "group": "Frontend architecture",
+      "items": [
+        "Micro-frontends",
+        "Module Federation",
+        "Webpack",
+        "Server side rendering",
+        "Core Web Vitals",
+        "Design systems"
+      ]
+    },
+    {
+      "group": "Backend and data",
+      "items": [
+        "REST API design",
+        "SQL",
+        "Data modelling",
+        "Feature flags and experimentation"
+      ]
+    },
+    {
+      "group": "AI tooling",
+      "items": [
+        "Claude Code",
+        "LLM application design",
+        "MCP"
+      ]
+    },
+    {
+      "group": "Testing and delivery",
+      "items": [
+        "Playwright",
+        "Jest",
+        "GitHub Actions",
+        "Vercel"
+      ]
+    }
   ],
   "education": {
     "degree": "B.Tech, Computer Science",

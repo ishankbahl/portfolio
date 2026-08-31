@@ -3,6 +3,7 @@ import type { ReactNode } from 'react'
 import localFont from 'next/font/local'
 import { Analytics } from '@vercel/analytics/next'
 import { SpeedInsights } from '@vercel/speed-insights/next'
+import { SiteHeader } from '@/components/SiteHeader'
 import { resume } from '@/lib/resume'
 import './globals.css'
 
@@ -58,6 +59,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         >
           Skip to content
         </a>
+        <SiteHeader person={person} />
         {children}
         {/*
           The only two client components on the page, and the only exceptions

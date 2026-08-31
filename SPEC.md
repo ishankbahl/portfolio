@@ -19,7 +19,7 @@ No contact form. A form needs a backend, a spam story and a deliverability story
 LinkedIn link do the same job for nothing.
 No dark mode toggle. A toggle needs persistence and a flash-prevention script, and neither belongs on
 a one page site.
-No animation library, no scroll effects, no photography.
+No animation library, no scroll effects.
 
 ## Stack
 
@@ -33,14 +33,17 @@ use, and its cost is measured rather than hand waved. See `docs/adr/0003-framewo
 
 ## Structure
 
-One route, `/`. Sections in order:
+One route, `/`. A sticky header carries the name, in-page nav and the resume action. Then:
 
-1. Hero. Name, headline, positioning, location, and three actions: resume, email, GitHub.
+1. Hero. Two columns. Headline, name, positioning and three actions on the left; the photo and a
+   facts card on the right, carrying current role, location, education and the open source link.
 2. What I work on. Prose, not bullets.
-3. Experience. Company, title, period, up to four lines each, closing with one line of education. The
-   Wingify entry links the Node SDK on GitHub, the only claim here a reader can check against code.
-4. Skills. Grouped, as plain words.
-5. Footer. Email, LinkedIn, GitHub, resume.
+3. Skills. Grouped, as plain words, in a grid.
+4. Selected work. Three cards, one per company: the problem in a line, what I built in a paragraph,
+   and one decision with its cost. This is the section that makes the page a portfolio rather than a
+   CV, which is exactly how it reads without it.
+5. Experience. Company, title, period, up to four lines each.
+6. Footer. Email, LinkedIn, GitHub, resume.
 
 Everything renders from `content/resume.json`. A hardcoded string in a component is a bug. Section
 labels like "Experience" are structure, not content, so they stay in the components: the rule exists
@@ -95,15 +98,22 @@ so adding a third is a deliberate decision rather than an accident.
 
 ## Images
 
-No images are rendered. The Open Graph image is referenced in a meta tag and never rendered.
+One image: the hero photo. Plain `<img>` with explicit `width` and `height`, which is what reserves
+the box and holds CLS at zero. That is an attribute, not a component.
 
-If one is added, use a plain `<img>` with explicit `width`, `height` and `loading="lazy"`, not
-`next/image`. Two measured reasons. `next/image` adds 5.39 kB to the route, most of the 6 kB budget,
-for a component this page has no use for. And under `output: 'export'` it emits `/_next/image?url=...`
-URLs with no server to answer them, so the build passes and the images 404 in production.
-`images: { unoptimized: true }` fixes the URLs and not the bytes.
+Not `next/image`. Two measured reasons. It adds 5.39 kB to the route, most of the 6 kB budget. And
+under `output: 'export'` it emits `/_next/image?url=...` URLs with no server to answer them, so the
+build passes and the images 404 in production. `images: { unoptimized: true }` fixes the URLs and not
+the bytes.
 
-Explicit width and height is what holds CLS at zero. That is an attribute, not a component.
+The photo is `loading="eager"` with `fetchpriority="high"`, not lazy, because it is the LCP element.
+Lazy loading the largest element above the fold delays the metric it is meant to protect.
+
+It costs 57 kB and 0.87 s of LCP, measured both ways: 0.60 s without it, 1.47 s with it, on a 4x CPU
+and Slow 4G profile. That is under the 1.5 s target with little room, and it is the single thing that
+stops the page reading as a formatted CV. CLS stays at 0 either way.
+
+The Open Graph image is referenced in a meta tag and never rendered.
 
 ## Analytics
 
@@ -120,27 +130,37 @@ Google Analytics was the original plan for both. It does not give useful Core We
 
 ## Design
 
-One column, left aligned, generous whitespace. A real type scale, body line height 1.6, measure
-capped around 68 characters. The vertical gap between sections is clearly larger than the gap inside
-them. Mobile first: design at 360 px, check 768 and 1440. Dark via `prefers-color-scheme`.
+A 64rem shell with prose capped at the 68 character measure, so the page has horizontal structure
+without long lines. Two column hero, single column below it. A real type scale, body line height 1.6.
+The gap between sections is clearly larger than the gap inside them. Mobile first: design at 360 px,
+check 768 and 1440. Dark via `prefers-color-scheme`.
+
+This started as "one column, left aligned". At 672px wide the page was the same height at 768 px and
+at 1440 px, which is to say it had no desktop layout at all and read as a formatted document. The
+shell widened and a sticky header went in for that reason.
 
 One variable font, self hosted with `next/font/local` from a woff2 committed to the repo. Fetching it
 from Google at build time would put a network call in the CI path for nothing.
 
-**Palette.** One accent hue at two lightness values, one per scheme, plus one highlight colour for
-the marker on the headline. The accent is on links, the focus ring, the primary button and the list
-markers. Every colour is checked by script in both schemes, not by eye.
+**Palette.** One accent hue at two lightness values, one per scheme. It is on links, the focus ring,
+the primary button, the list markers and the decision panel rule. `pnpm contrast` reads the hex values
+out of `app/globals.css` and asserts every ratio, so the palette cannot drift past a threshold
+silently.
+
+There was briefly a pen marker highlight behind the headline. Two independent reads called it a bug,
+one saying it looked like selected text or a filled input, so it is gone.
 
 Two constraints came out of that checking rather than taste. Links cannot be carried by colour alone,
 because the accent is 2.5:1 against body text and WCAG asks for 3:1 when colour is the only cue, so
 text links keep a visible underline and the primary action is a filled button. And white on the dark
 scheme's lighter violet is 2.72:1 and fails, so the dark button uses near-black text.
 
-**On the page:** a soft radial wash behind the hero, rounded cards for experience, pills for skills.
+**On the page:** a sticky header with in-page nav, a soft radial wash behind the hero, one band with
+its own surface so the page is not a single continuous column, rounded cards, pills for skills.
 All CSS, so no JavaScript cost, and the wash is a fixed pseudo element so it cannot affect layout.
 
 **Not on the page:** stock illustration, skill percentage bars, star ratings, terminal typing
-effects. Bars and ratings assert a precision nobody can defend. A pill is a word with a border round
+effects, gradient blobs, glassmorphism. Bars and ratings assert a precision nobody can defend. A pill is a word with a border round
 it and claims nothing.
 
 ## Tests
@@ -209,10 +229,6 @@ production URL therefore has to be settled before the build, not discovered afte
 - `pnpm check:placeholders` exits 0
 
 ## Deferred
-
-Selected Work. Three cards, one per company, each naming the problem in a line, what I built in a
-paragraph, and one decision with its cost. The first thing going back in, and the reason the page
-would be worth a second visit.
 
 Per project detail pages, the same idea with room to explain a system properly.
 Build time PDF generation from the same JSON, which removes the drift risk in ADR 0001.

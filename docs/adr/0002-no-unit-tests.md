@@ -9,7 +9,7 @@ The default for a project like this is Jest and React Testing Library alongside 
 
 ## Decision
 
-Playwright only. Six tests. No unit layer.
+Playwright only. Six specs, seven cases in the runner. No unit layer.
 
 ## Why
 
@@ -21,16 +21,15 @@ What can break on a static site is a broken link, a missing asset after a rename
 the preview breaks when someone shares it, or a regression in keyboard access. None of those are
 visible to a unit test.
 
-I also cut the end to end list from ten to five for the same reason. The ones I removed asserted
-things that cannot fail: that a value from a JSON file appears in the output, that external links
-carry `rel="noopener"` which browsers imply for `target="_blank"` anyway, and that the page renders
-correctly at three viewport widths, which is not an assertion without visual snapshots.
+The end to end list started at ten. Five survived, cut for the same reason: they asserted things that
+cannot fail, like a value from a JSON file appearing in the output, or `rel="noopener"` which browsers
+imply for `target="_blank"` anyway. A sixth was added later, when the skip link turned out to be doing
+nothing in Safari. That one has a failure mode, which is the whole test.
 
 ## Consequence
 
-The suite is slower per test than unit tests and points at a symptom rather than a line. On six
-tests and this much code, finding the line takes under a minute.
+The suite is slower per test than unit tests and points at a symptom rather than a line. On six specs
+and this much code, finding the line takes under a minute.
 
-This decision is about a static content site with no logic. It is not a general position. The moment
-this repository grows a transformation with branches, which it would the day I add an HTML resume
-route with date formatting and a null end date, the unit layer is where the value is.
+This is a static content site with no logic, not a general position on unit tests. The first
+transformation with branches earns a unit layer.
