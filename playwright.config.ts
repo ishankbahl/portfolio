@@ -24,7 +24,9 @@ export default defineConfig({
   ...(usingLocalBuild
     ? {
         webServer: {
-          command: 'pnpm exec serve out --listen 3000 --no-clipboard --no-port-switching',
+          // The binary directly, not via pnpm. Playwright spawns this in a bare shell
+          // where a corepack-provided pnpm is not on PATH, locally or in CI.
+          command: 'node_modules/.bin/serve out --listen 3000 --no-clipboard --no-port-switching',
           url: baseURL,
           reuseExistingServer: !process.env.CI,
           timeout: 60_000,
