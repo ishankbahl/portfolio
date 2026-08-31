@@ -51,7 +51,13 @@ export default function Home() {
                   <p className="text-meta text-muted">{role.period}</p>
                 </div>
                 <p className="text-meta text-muted">{role.title}</p>
-                <ul className="mt-3 space-y-1.5">
+                {/*
+                  Markers, because without them the gap between items is smaller
+                  than the leading inside a wrapped item and the list stops
+                  reading as a list. Worst at 360 px, where items run to three
+                  lines.
+                */}
+                <ul className="mt-3 list-outside list-disc space-y-2 ps-5 marker:text-muted">
                   {role.lines.map((line) => (
                     <li key={line.slice(0, 40)} className="text-body">
                       {line}
