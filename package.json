@@ -13,7 +13,8 @@
     "lint": "eslint .",
     "budget": "node scripts/check-js-budget.mjs",
     "og": "node scripts/generate-og.mjs",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "check:placeholders": "node scripts/check-placeholders.mjs"
   },
   "dependencies": {
     "@vercel/analytics": "^2.0.1",
