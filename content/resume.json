@@ -8,7 +8,7 @@
     "github": "https://github.com/ishankbahl",
     "linkedin": "https://www.linkedin.com/in/ishank-bahl-53bb79108/",
     "resumePdf": "/ishank-bahl-resume.pdf",
-    "siteUrl": "https://ishankbahl.vercel.app"
+    "siteUrl": "https://portfolio-six-azure-25.vercel.app"
   },
   "intro": [
     "I work on the parts of a system other teams depend on. That has meant a hierarchical configuration model and a React micro-frontend that had to live inside an Angular host, the home and discovery surfaces of a streaming product, and the feature flag SDK that server side experiments call.",
