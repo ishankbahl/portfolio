@@ -1,0 +1,23 @@
+# dependencies
+node_modules/
+.pnpm-store/
+
+# next
+.next/
+out/
+next-env.d.ts
+
+# playwright
+test-results/
+playwright-report/
+blob-report/
+.playwright/
+
+# working notes that never ship
+private/
+
+# local env and editor
+.env
+.env.*
+.DS_Store
+*.log
