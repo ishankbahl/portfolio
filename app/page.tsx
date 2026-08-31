@@ -9,7 +9,18 @@ export default function Home() {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: personJsonLd() }} />
-      <main id="main" className="mx-auto w-full max-w-[38rem] px-6 py-20 sm:py-28">
+      {/*
+        tabIndex -1 so the skip link actually moves focus. main is not focusable
+        by default, so activating the link moved the hash and left activeElement
+        on body in both engines. Chromium masks that by continuing sequential
+        focus from the fragment target anyway; WebKit does not, so in Safari the
+        next Tab went back to the top. Covered by tests/skip-link.spec.ts.
+      */}
+      <main
+        id="main"
+        tabIndex={-1}
+        className="mx-auto w-full max-w-[38rem] px-6 py-20 sm:py-28 focus:outline-none"
+      >
         <section>
           <h1 className="text-name font-semibold tracking-tight">{person.name}</h1>
           <p className="mt-4 text-lead">{person.positioning}</p>

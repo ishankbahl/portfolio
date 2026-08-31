@@ -64,9 +64,12 @@ browser. That rasterises the DOM, so you get an image of text with no text layer
 tracking system can parse. The feature would have defeated the requirement that motivated it. It is
 now an anchor pointing at the PDF I already maintain and have tested. [docs/adr/0001-serve-static-pdf.md](docs/adr/0001-serve-static-pdf.md).
 
-**There are no unit tests, and there are five end to end tests rather than ten.** There is no logic
-here to unit test, and half the end to end list was asserting things that had no failure mode, so it
-went. [docs/adr/0002-no-unit-tests.md](docs/adr/0002-no-unit-tests.md).
+**There are no unit tests, and there are six end to end tests rather than ten.** There is no logic
+here to unit test, and half the original end to end list was asserting things that had no failure
+mode, so it went. It went from ten to five on that argument, then back to six when a review found a
+bug the suite had shipped: the skip link moved the hash without moving focus, which is invisible to
+axe and invisible in Chromium. The same argument that cut four tests added that one.
+[docs/adr/0002-no-unit-tests.md](docs/adr/0002-no-unit-tests.md).
 
 **Analytics is two tools, not one.** Vercel Web Analytics for visits, Speed Insights for real user
 Core Web Vitals. I had originally planned Google Analytics for both, which was wrong, because GA does

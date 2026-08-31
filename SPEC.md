@@ -183,13 +183,23 @@ persistence and a flash-prevention script and I did not want either on a one pag
 
 ## Tests
 
-Five Playwright tests. Written before the code they cover.
+Six Playwright tests. Five written before the code they cover, and one added after a review because
+the bug it covers had already shipped.
 
 1. The page returns 200 and renders my name in an `h1`.
 2. The resume link returns 200 with content type `application/pdf`.
 3. `axe-core` reports zero violations at serious or critical level, run once per colour scheme.
-4. No console errors and no failed network requests on load, ignoring `/_vercel/`.
+4. No console errors and no failed network requests on load, ignoring `/_vercel/`, plus the declared
+   icon resolves.
 5. Open Graph title, description and image are present, and the image URL is absolute.
+6. Activating the skip link moves focus into `main`.
+
+Test 6 is the honest kind of addition. `main` is not focusable, so the skip link moved the hash and
+left focus on `body`. Chromium hides that by continuing sequential focus from the fragment target
+anyway, WebKit does not, and in Safari the next Tab went back to the top of the page. axe cannot see
+it, because axe reads a static tree and this is a behaviour. ADR 0002 says a test earns its place by
+having a failure mode. This one had a demonstrated one, in production, so the count went to six
+rather than the test being squeezed into another one to protect the number.
 
 Test 3 runs twice because one run only ever sees the palette the browser happens to be in, which is
 light. Dark mode is a second set of colours and an axe run that never loads them is not evidence
@@ -244,7 +254,7 @@ design tool in this loop and I did not want a second image library either.
 
 ## Done when
 
-- Five Playwright tests pass locally and in CI, CI green on the default branch
+- Six Playwright tests pass locally and in CI, CI green on the default branch
 - Deployed to Vercel, production URL live
 - Lighthouse run against the production URL, real numbers in the README, screenshot committed at
   `docs/lighthouse.png`
