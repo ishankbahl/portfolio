@@ -15,6 +15,7 @@ blob-report/
 
 # working notes that never ship
 private/
+_private/
 
 # local env and editor
 .env
