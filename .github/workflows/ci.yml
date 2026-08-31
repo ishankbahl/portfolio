@@ -21,6 +21,11 @@ jobs:
         uses: actions/setup-node@v5
         with:
           node-version-file: .nvmrc
+          # Off because it defaults on, and when it is on this action looks for
+          # pnpm to configure caching before corepack has provided it, which
+          # fails the step. Caching 440 packages on a project this size is not
+          # worth a third party action to work around the ordering.
+          package-manager-cache: false
 
       # pnpm comes from the packageManager field, so the version is pinned by
       # the repo rather than by whatever this runner happens to ship.
