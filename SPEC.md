@@ -57,7 +57,10 @@ only thing between this spec and a deployed URL, and this week shipping was wort
 section. The lines in Experience stayed at four rather than being cut to two, because the cut was
 only defensible while Selected Work existed to carry the detail.
 
-Everything renders from `content/resume.json`. A hardcoded string in a component is a bug.
+Everything renders from `content/resume.json`. A hardcoded string in a component is a bug. Section
+labels like "Experience" are structure rather than content, so they stay in the components. The rule
+exists so that changing what the page says about me is a content commit, and renaming a section is
+not that.
 
 ## The resume PDF
 
@@ -72,8 +75,8 @@ The page also carries a `Person` JSON-LD block generated from the same JSON.
 
 ## Performance, measured not asserted
 
-I measured the framework baseline before setting any target. Next.js 15.5.4, App Router, static
-export, a page with no client components: **102 kB gzipped First Load JS, of which 127 bytes was
+I measured the framework baseline before setting any target. Next.js 15.5.24, App Router, static
+export, a page with no client components: **102 kB gzipped First Load JS, of which 123 bytes was
 application code.** That number is the floor and no amount of care on my side moves it.
 
 So the target is not a total. It is the part I control.
@@ -88,9 +91,13 @@ So the target is not a total. It is the part I control.
 | Lighthouse performance and accessibility, mobile | report the real numbers | by hand, once |
 
 Only the first row is a CI gate, because it is the only one CI can honestly assert on a static
-export. Most of that 6 kB is the two analytics components rather than my own code, and the README
-splits it out. The rest are measured once against the deployed URL and the actual figures go in the README.
+export. The rest are measured once against the deployed URL and the actual figures go in the README.
 If one of them misses, the real number goes in with a sentence saying why.
+
+Measured, not predicted: application JavaScript is **2.34 kB gzipped of the 6 kB budget, and all of
+it is the two analytics components. My own code is 0.00 kB.** Every component on this page except
+those two is a server component, so none of them reach the browser. I expected to be writing "most
+of it is analytics" here and the honest number turned out to be all of it.
 
 The gate is a script rather than a number I read off the build output. It takes the chunk list for `/`
 from `.next/app-build-manifest.json`, drops the chunks in the shared framework set, gzips what is
@@ -186,7 +193,12 @@ Five Playwright tests. Written before the code they cover.
 
 Test 3 runs twice because one run only ever sees the palette the browser happens to be in, which is
 light. Dark mode is a second set of colours and an axe run that never loads them is not evidence
-about them. It stays one test.
+about them. It is one test of five in this list and two cases in the runner, which reports six, and
+it is two cases rather than one loop so a failure says which scheme broke.
+
+That second run is not theoretical. I dropped the dark accent to a failing colour and rebuilt: light
+stayed green and dark failed with `color-contrast` at serious on eight nodes. A light-only run would
+have shipped it.
 
 Test 4 needs the `/_vercel/` exception or it fails on a 404 that is correct behaviour everywhere
 except production, since the analytics scripts come from the platform and not from this build. The

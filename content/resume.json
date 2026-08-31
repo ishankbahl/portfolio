@@ -1,0 +1,64 @@
+{
+  "person": {
+    "name": "Ishank Bahl",
+    "headline": "Senior Software Engineer and Tech Lead",
+    "positioning": "Seven years building product end to end, from micro-frontends and design systems to the APIs, data models and infrastructure underneath.",
+    "location": "Delhi NCR, India",
+    "email": "ishankbahl1997@gmail.com",
+    "github": "https://github.com/ishankbahl",
+    "linkedin": "https://www.linkedin.com/in/ishank-bahl-53bb79108/",
+    "resumePdf": "/ishank-bahl-resume.pdf",
+    "siteUrl": "https://ishankbahl.vercel.app"
+  },
+  "intro": [
+    "I work on the parts of a system other teams depend on. That has meant a hierarchical configuration model and a React micro-frontend that had to live inside an Angular host, the home and discovery surfaces of a streaming product, and the feature flag SDK that server side experiments call.",
+    "I write the services and data models behind those interfaces too, in Node, Python and SQL, and I have owned the infrastructure they run on. The work is the contract underneath the screen rather than the screen: what a team can change safely, what breaks when they do, and who finds out."
+  ],
+  "experience": [
+    {
+      "company": "Netskope",
+      "title": "Senior Software Engineer / Tech Lead",
+      "period": "Jun 2024 to present",
+      "lines": [
+        "Architected a hierarchical configuration system and integrated a React micro-frontend into an Angular host application.",
+        "Built an LLM powered Slack assistant that automated on-call triage and patch workflows.",
+        "Built and integrated backend APIs across Node.js, Python, PHP, Java and SQL.",
+        "Owned infrastructure projects end to end and mentored the developers on them."
+      ]
+    },
+    {
+      "company": "Disney+ Hotstar",
+      "title": "Software Development Engineer II / Tech Lead",
+      "period": "Jan 2022 to Jun 2024",
+      "lines": [
+        "Led development of the continue watching tray, watchlist tray and details overlay.",
+        "Architected reusable platform components for the home and discovery pages.",
+        "Improved performance and reliability across the frontend experiences the team owned.",
+        "Ran design reviews and built the onboarding programme for new engineers."
+      ]
+    },
+    {
+      "company": "Wingify (VWO)",
+      "title": "Software Developer II",
+      "period": "Jun 2019 to Jan 2022",
+      "lines": [
+        "Built VWO Fullstack, the feature flag and rollout product behind server side A/B testing.",
+        "Wrote the frontend architecture and co-wrote the open source Node.js SDK.",
+        "Integrated VWO with third party applications."
+      ],
+      "link": { "label": "vwo-node-sdk", "url": "https://github.com/wingify/vwo-node-sdk" }
+    }
+  ],
+  "skills": [
+    { "group": "Languages and frameworks", "items": ["TypeScript", "JavaScript", "React", "Next.js", "Redux", "Node.js", "Angular", "Python", "HTML", "CSS"] },
+    { "group": "Frontend architecture", "items": ["Micro-frontends", "Module Federation", "Webpack", "Server side rendering", "Core Web Vitals", "Design systems"] },
+    { "group": "Backend and data", "items": ["REST API design", "SQL", "Data modelling", "Feature flags and experimentation"] },
+    { "group": "AI tooling", "items": ["Claude Code", "LLM application design", "MCP"] },
+    { "group": "Testing and delivery", "items": ["Playwright", "Jest", "GitHub Actions", "Vercel"] }
+  ],
+  "education": {
+    "degree": "B.Tech, Computer Science",
+    "institution": "Maharaja Surajmal Institute of Technology, GGSIPU, New Delhi",
+    "year": 2019
+  }
+}
